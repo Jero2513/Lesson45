@@ -1,4 +1,4 @@
-from colorama import Fore
+from colorama import 
 
 print(Fore.GREEN + "Hello from master branch, Jerome!")
 print(Fore.RED + "Welcome to my Python project, Jerome!")
