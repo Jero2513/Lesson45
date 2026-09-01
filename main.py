@@ -50,6 +50,58 @@ model = LinearRegression()
 
 model.fit(X, y)
 
+import kivy
+kivy.require("2.1.0")
+
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from sklearn.linear_model import LinearRegression
+
+
+# ==========================================
+# TRAINING DATA
+# ==========================================
+
+# [hours studied, assignments, attendance, previous score, sleep]
+X = [
+    [1, 2, 60, 35, 5],
+    [2, 3, 65, 40, 6],
+    [3, 4, 70, 45, 6],
+    [4, 5, 75, 50, 7],
+    [5, 6, 80, 60, 7],
+    [6, 7, 85, 65, 7],
+    [7, 8, 90, 75, 8],
+    [8, 9, 95, 80, 8],
+    [9, 10, 98, 88, 8],
+    [10, 10, 100, 92, 9]
+]
+
+# Exam scores
+y = [
+    35,
+    42,
+    48,
+    55,
+    65,
+    72,
+    80,
+    86,
+    92,
+    96
+]
+
+
+# ==========================================
+# CREATE AND TRAIN AI MODEL
+# ==========================================
+
+model = LinearRegression()
+
+model.fit(X, y)
+
 
 # ==========================================
 # AI APPLICATION
@@ -287,6 +339,15 @@ class StudyAIApp(App):
             # SEND DATA TO AI
             # ------------------------------
 
+            if sleep < 0:
+                self.result.text = "Sleep hours cannot be negative."
+                return
+
+
+            # ------------------------------
+            # SEND DATA TO AI
+            # ------------------------------
+
             student_data = [[
                 hours,
                 assignments,
@@ -314,7 +375,50 @@ class StudyAIApp(App):
 
             self.result.text = (
                 f"🎯 Predicted Score: "
-                f"{prediction:.2f}%"
+                f"{prediction:.2}%"
+            )
+
+
+        except ValueError:
+
+            self.result.text = (
+                "⚠️ Please fill in all fields."
+            )
+
+
+# ==========================================
+# START APPLICATION
+# ==========================================
+
+StudyAIApp().run()
+            student_data = [[
+                hours,
+                assignments,
+                attendance,
+                previous,
+                sleep
+            ]]
+
+
+            prediction = model.predict(
+                student_data
+            )[0]
+
+
+            # Keep prediction between 0 and 100
+            prediction = max(
+                0,
+                min(100, prediction)
+            )
+
+
+            # ------------------------------
+            # DISPLAY RESULT
+            # ------------------------------
+
+            self.result.text = (
+                f"🎯 Predicted Score: "
+                f"{prediction:.2}%"
             )
 
 
